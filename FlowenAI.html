@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flowxen AI - Smarter Workflows, Deeper Connections</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.net.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .service-card {
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.3);
+        }
+        
+        .service-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover .service-icon {
+            transform: rotateY(180deg) scale(1.1);
+        }
+        
+        .nav-glass {
+            backdrop-filter: blur(10px);
+            background: rgba(15, 23, 42, 0.8);
+        }
+        
+        .hero-section {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .btn-glow {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-glow:hover {
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.8);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        
+        #network-visualization {
+            width: 100%;
+            height: 400px;
+            position: relative;
+        }
+        
+        .contact-input {
+            background: rgba(15, 23, 42, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .contact-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100">
+    <!-- Navigation -->
+    <nav class="nav-glass fixed w-full z-50 py-4 px-6 lg:px-16 flex justify-between items-center">
+        <div class="flex items-center">
+            <span class="text-2xl font-bold gradient-text">Flowxen AI</span>
+        </div>
+        <div class="hidden md:flex space-x-8">
+            <a href="#home" class="hover:text-blue-400 transition">Home</a>
+            <a href="#services" class="hover:text-blue-400 transition">Services</a>
+            <a href="#contact" class="hover:text-blue-400 transition">Contact</a>
+        </div>
+        <div>
+            <a href="https://calendar.google.com/calendar/u/5?cid=Zmxvd3hlbi5haUBnbWFpbC5jb20" target="_blank" class="btn-glow bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-medium transition">
+                Book Call
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section min-h-screen flex items-center pt-20 pb-16 px-6 lg:px-16">
+        <div class="hero-bg" id="hero-bg"></div>
+        <div class="container mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="fade-in">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+                        Smarter Workflows, <span class="gradient-text">Deeper Connections</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-slate-300 mb-8">
+                        We help companies, businesses, and individuals automate repetitive workflows — from lead generation to AI-powered client calling, proposal creation, calendar syncing, and even 3D website building.
+                    </p>
+                    <a href="#contact" class="btn-glow inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-medium text-lg transition transform hover:scale-105">
+                        Book a Free Workflow Audit
+                    </a>
+                </div>
+                <div class="fade-in delay-1">
+                    <div id="network-visualization"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 px-6 lg:px-16 bg-slate-800/50">
+        <div class="container mx-auto">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Our <span class="gradient-text">Automation Services</span></h2>
+                <p class="text-lg text-slate-300 max-w-3xl mx-auto">
+                    Transform your business with our cutting-edge AI automation solutions designed to save you time and boost productivity.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="service-card fade-in delay-1 bg-slate-800 rounded-xl p-8 border border-slate-700">
+                    <div class="service-icon w-16 h-16 mb-6 mx-auto flex items-center justify-center rounded-full bg-blue-900/30 text-blue-400 text-2xl">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Lead Capture & Follow-ups</h3>
+                    <p class="text-slate-300">
+                        Automatically capture leads from multiple sources and engage them with personalized, timely follow-ups.
+                    </p>
+                </div>
+                
+                <!-- Service 2 -->
+                <div class="service-card fade-in delay-2 bg-slate-800 rounded-xl p-8 border border-slate-700">
+                    <div class="service-icon w-16 h-16 mb-6 mx-auto flex items-center justify-center rounded-full bg-purple-900/30 text-purple-400 text-2xl">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Proposal & Contract Generation</h3>
+                    <p class="text-slate-300">
+                        Generate professional proposals and contracts in seconds with AI that learns your business style.
+                    </p>
+                </div>
+                
+                <!-- Service 3 -->
+                <div class="service-card fade-in delay-3 bg-slate-800 rounded-xl p-8 border border-slate-700">
+                    <div class="service-icon w-16 h-16 mb-6 mx-auto flex items-center justify-center rounded-full bg-blue-900/30 text-blue-400 text-2xl">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">AI-Powered Client Calling</h3>
+                    <p class="text-slate-300">
+                        Natural-sounding AI that handles client calls, schedules appointments, and follows up automatically.
+                    </p>
+                </div>
+                
+                <!-- Service 4 -->
+                <div class="service-card fade-in delay-1 bg-slate-800 rounded-xl p-8 border border-slate-700">
+                    <div class="service-icon w-16 h-16 mb-6 mx-auto flex items-center justify-center rounded-full bg-purple-900/30 text-purple-400 text-2xl">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Automated Calendar Scheduling</h3>
+                    <p class="text-slate-300">
+                        Never miss an appointment with smart scheduling that syncs across all your calendars and devices.
+                    </p>
+                </div>
+                
+                <!-- Service 5 -->
+                <div class="service-card fade-in delay-2 bg-slate-800 rounded-xl p-8 border border-slate-700">
+                    <div class="service-icon w-16 h-16 mb-6 mx-auto flex items-center justify-center rounded-full bg-blue-900/30 text-blue-400 text-2xl">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">3D Websites with Automation</h3>
+                    <p class="text-slate-300">
+                        Stunning 3D websites that integrate seamlessly with your automation workflows for a complete solution.
+                    </p>
+                </div>
+                
+                <!-- Service 6 -->
+                <div class="service-card fade-in delay-3 bg-slate-800 rounded-xl p-8 border border-slate-700">
+                    <div class="service-icon w-16 h-16 mb-6 mx-auto flex items-center justify-center rounded-full bg-purple-900/30 text-purple-400 text-2xl">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Custom Workflow Automation</h3>
+                    <p class="text-slate-300">
+                        Tailored automation solutions designed specifically for your unique business processes and needs.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 px-6 lg:px-16 bg-slate-900">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="fade-in">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Let's <span class="gradient-text">Automate</span> Your Workflow</h2>
+                    <p class="text-lg text-slate-300 mb-8">
+                        Ready to transform your business with AI automation? Get in touch with us today for a free consultation.
+                    </p>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope text-blue-400 mr-4 text-xl"></i>
+                            <span class="text-slate-300">flowxen.ai@gmail.com</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-phone-alt text-blue-400 mr-4 text-xl"></i>
+                            <span class="text-slate-300">+91 7044120290 / +91 9073970086</span>
+                        </div>
+                    </div>
+                    
+                    <a href="https://calendar.google.com/calendar/u/5?cid=Zmxvd3hlbi5haUBnbWFpbC5jb20" target="_blank" class="btn-glow inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-medium text-lg transition transform hover:scale-105">
+                        Book a 20-minute Discovery Call
+                    </a>
+                </div>
+                
+                <div class="fade-in delay-1 bg-slate-800/50 rounded-xl p-8 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-6">Send us a message</h3>
+                    <form id="contactForm" class="space-y-4">
+                        <div>
+                            <input type="text" id="name" name="name" placeholder="Your Name" required class="contact-input w-full px-4 py-3 rounded-lg bg-slate-800/50 focus:bg-slate-800/70">
+                        </div>
+                        <div>
+                            <input type="email" id="email" name="email" placeholder="Your Email" required class="contact-input w-full px-4 py-3 rounded-lg bg-slate-800/50 focus:bg-slate-800/70">
+                        </div>
+                        <div>
+                            <textarea id="message" name="message" placeholder="Your Message" rows="4" required class="contact-input w-full px-4 py-3 rounded-lg bg-slate-800/50 focus:bg-slate-800/70"></textarea>
+                        </div>
+                        <button type="submit" class="btn-glow w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 lg:px-16 bg-slate-900 border-t border-slate-800">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <span class="text-2xl font-bold gradient-text">Flowxen AI</span>
+                    <p class="text-slate-400 mt-2">Smarter Workflows, Deeper Connections</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="https://www.linkedin.com/company/flowxen-ai/" target="_blank" class="text-slate-400 hover:text-blue-400 text-2xl transition">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-slate-800 text-center text-slate-500">
+                <p>&copy; 2023 Flowxen AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="toastMessage">Message sent successfully!</span>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Vanta.js background
+        document.addEventListener('DOMContentLoaded', function() {
+            VANTA.NET({
+                el: "#hero-bg",
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                scale: 1.00,
+                scaleMobile: 1.00,
+                color: 0x3b82f6,
+                backgroundColor: 0x0f172a,
+                points: 12.00,
+                maxDistance: 22.00,
+                spacing: 16.00
+            });
+            
+            // Simple network visualization for the hero section
+            const container = document.getElementById('network-visualization');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+            
+            // Create nodes
+            const nodes = [];
+            const nodeGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+            const nodeMaterial = new THREE.MeshBasicMaterial({ color: 0x3b82f6 });
+            
+            for (let i = 0; i < 15; i++) {
+                const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
+                node.position.x = (Math.random() - 0.5) * 10;
+                node.position.y = (Math.random() - 0.5) * 10;
+                node.position.z = (Math.random() - 0.5) * 10;
+                nodes.push(node);
+                scene.add(node);
+            }
+            
+            // Create connections
+            const lineMaterial = new THREE.LineBasicMaterial({ color: 0x8b5cf6, opacity: 0.5, transparent: true });
+            
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    if (Math.random() > 0.7) {
+                        const geometry = new THREE.BufferGeometry().setFromPoints([
+                            new THREE.Vector3(nodes[i].position.x, nodes[i].position.y, nodes[i].position.z),
+                            new THREE.Vector3(nodes[j].position.x, nodes[j].position.y, nodes[j].position.z)
+                        ]);
+                        const line = new THREE.Line(geometry, lineMaterial);
+                        scene.add(line);
+                    }
+                }
+            }
+            
+            camera.position.z = 15;
+            
+            // Animation
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                nodes.forEach((node, index) => {
+                    node.position.x += (Math.random() - 0.5) * 0.05;
+                    node.position.y += (Math.random() - 0.5) * 0.05;
+                    node.position.z += (Math.random() - 0.5) * 0.05;
+                });
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+            
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Add fade-in class to elements when they come into view
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const fadeObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            fadeElements.forEach(element => {
+                element.classList.add('opacity-0');
+                fadeObserver.observe(element);
+            });
+            
+            // Contact form submission
+            const contactForm = document.getElementById('contactForm');
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(contactForm);
+                const data = {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    message: formData.get('message')
+                };
+                
+                // Send email using Formspree or similar service
+                fetch('https://formspree.io/f/myyqjqjq', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: data.name,
+                        email: data.email,
+                        message: data.message,
+                        _replyto: data.email,
+                        _subject: `New message from ${data.name} - Flowxen AI Contact Form`
+                    }),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Show success toast
+                        toastMessage.textContent = "Message sent successfully!";
+                        toast.classList.remove('hidden');
+                        toast.classList.add('show');
+                        
+                        // Reset form
+                        contactForm.reset();
+                        
+                        // Hide toast after 5 seconds
+                        setTimeout(() => {
+                            toast.classList.remove('show');
+                            setTimeout(() => {
+                                toast.classList.add('hidden');
+                            }, 300);
+                        }, 5000);
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                })
+                .catch(error => {
+                    // Show error toast
+                    toastMessage.textContent = "Failed to send message. Please try again.";
+                    toast.classList.remove('hidden');
+                    toast.classList.add('show');
+                    
+                    // Hide toast after 5 seconds
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                        setTimeout(() => {
+                            toast.classList.add('hidden');
+                        }, 300);
+                    }, 5000);
+                    
+                    console.error('Error:', error);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
